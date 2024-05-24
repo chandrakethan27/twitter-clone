@@ -9,8 +9,11 @@ import { BsPeople } from "react-icons/bs";
 import { CiCircleMore } from "react-icons/ci";
 import { BsPerson } from "react-icons/bs";
 import FeedCard from "@/components/FeedCard";
-// import { GoogleLogin } from '@react-oauth/google';
-
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { useCallback } from "react";
+import  toast  from 'react-hot-toast';
+import { graphqlClient } from "../clients/api";
+import {verifyUserGoogleTokenQuery} from '../graphql/query/user'
 interface TwitterSidebarButton{
   title: string;
   icon: React.ReactNode;
@@ -59,6 +62,20 @@ const sideMenuBarItems : TwitterSidebarButton [] = [
 ]
 
 export default function Home() {
+  const handleLoginWithGoogle = useCallback(
+    async(cred: CredentialResponse)=>{
+    const googleToken = cred.credential;
+    if(!googleToken)
+      {
+        return toast.error('token not found!')
+      }
+    const {verifyGoogleToken} = await graphqlClient.request(verifyUserGoogleTokenQuery, 
+      {token: googleToken})
+    toast.success("Verified Sucess")    
+    if(verifyGoogleToken){
+      window.localStorage.setItem('twitter_token', verifyGoogleToken)
+    }
+  }, [])
   return (
     <div>
         <div className='grid grid-cols-12 h-screen w-screeen px-56'>
@@ -92,9 +109,10 @@ export default function Home() {
               <FeedCard />
               <FeedCard />
             </div>
-            <div className="col-span-3 ">
-              <div >
-              {/* <GoogleLogin onSuccess={(cred) => console.log(cred)} /> */}
+            <div className="col-span-3 p-4">
+              <div className="p-5 rounded-lg border-slate-600 border">
+              <h1 className="font-bold text-xl mb-2">New To Twitter? </h1>
+              <GoogleLogin onSuccess={handleLoginWithGoogle} />
               </div>
               
             </div>
