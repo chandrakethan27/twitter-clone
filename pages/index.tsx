@@ -7,8 +7,16 @@ import { RxImage } from "react-icons/rx";
 import Image from "next/image"
 import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet"
 import TwitterLayout from "@/components/Layout/TwitterLayout"
+import { GetServerSideProps } from "next";
+import { graphqlClient } from "@/clients/api";
+import { getAllTweetQuery } from "@/graphql/query/tweet";
+import { Tweet } from "@/gql/graphql";
 
-export default function Home() {
+interface HomeProps {
+  tweets?: Tweet[]
+}
+
+export default function Home(props) {
 
   const handleSelectImage = useCallback(()=>{
     const input = document.createElement("input")
@@ -17,7 +25,6 @@ export default function Home() {
     input.click()
   },[])
   const {user} = useCurrentUser()
-  const {tweets} = useGetAllTweets()
   const { mutate} = useCreateTweet()
   const [content, setContent] = useState('')
   const handleCreateTweet = useCallback(()=> {
@@ -57,10 +64,19 @@ export default function Home() {
                 </div>
               </div>
               {
-                tweets?.map(tweet => <FeedCard key={tweet?.id} data={tweet} />)
+                props.tweets?.map(tweet => <FeedCard key={tweet?.id} data={tweet} />)
               }
 
       </TwitterLayout>
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async(context) => {
+  const allTweets = await graphqlClient.request(getAllTweetQuery);
+  return {
+    props: {
+      tweets: allTweets.getAllTweets as Tweet[],
+    }
+  }
 }
