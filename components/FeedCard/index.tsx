@@ -12,7 +12,8 @@ interface FeedCardProps{
 
 const FeedCard: React.FC<FeedCardProps>= (props) =>{
     const {data} = props
-    return <div>
+    return (
+    <div>
         <div className="border border-gray-700 border-r-0 border-l-0 border-b-0 p-5 hover:bg-slate-900 transition-all cursor-pointer">
             <div className="grid grid-cols-12 gap-3">
                 <div className="col-span-1">
@@ -30,7 +31,10 @@ const FeedCard: React.FC<FeedCardProps>= (props) =>{
                     </h5>
                     <p>
                         {data.content}
+                        
                     </p>
+                    {data.imageURL && <Image src={data.imageURL} alt="tweet-image" width={300} height={300}/>}
+
                     <div className="flex justify-between mt-5 text-xl items-center p-2 w-[90%]">
                         <div>
                             <FaRegComment/>
@@ -48,6 +52,6 @@ const FeedCard: React.FC<FeedCardProps>= (props) =>{
                 </div>
             </div>
         </div>
-    </div>
+    </div>)
 }
 export default FeedCard;

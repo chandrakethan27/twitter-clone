@@ -13,6 +13,11 @@ const nextConfig = {
         hostname: 'lh3.googleusercontent.com',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'kethan-twitter-dev.s3.ap-south-1.amazonaws.com',
+        pathname: '**',
+      },
     ],
   },
 };
