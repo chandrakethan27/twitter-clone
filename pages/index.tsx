@@ -19,7 +19,7 @@ interface HomeProps {
 }
 
 export default function Home(props: HomeProps){
-  const {tweets = props.tweet as Tweet[]} = useGetAllTweets()
+  const {tweets = props.tweets as Tweet[]} = useGetAllTweets()
 
   const [imageURL, setImageURL] = useState("")
   const handleInputChangeFile = useCallback(  (input: HTMLInputElement) => {
@@ -103,7 +103,7 @@ export default function Home(props: HomeProps){
                 </div>
               </div>
               {
-                tweets?.map((tweet) => <FeedCard key={tweet?.id} data={tweet} /> )
+                tweets?.map((tweet) => <FeedCard key={tweet?.id} data={tweet as Tweet} /> )
               }
 
       </TwitterLayout>
