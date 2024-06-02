@@ -17,6 +17,9 @@ import {verifyUserGoogleTokenQuery} from '../../graphql/query/user'
 import { useCurrentUser } from "@/hooks/user"
 import { useQueryClient } from "@tanstack/react-query"
 import Link from 'next/link';
+import { IoMdLogOut } from "react-icons/io";
+import { useRouter } from 'next/router';
+
 import Image from "next/image"
 interface TwitterSidebarButton{
   title: string
@@ -24,14 +27,19 @@ interface TwitterSidebarButton{
   link: string
 }
 
-
-
 interface TwitterlayoutProps {
     children: React.ReactNode;
 }
 
 const TwitterLayout: React.FC<TwitterlayoutProps> = (props)=>{
 const {user} = useCurrentUser()
+const router = useRouter();
+
+
+const handleLogout = ()=>{
+  localStorage.removeItem('twitter_token')
+  router.reload()
+}
 
 const sideMenuBarItems:TwitterSidebarButton[] = useMemo( ()=>[
         {
@@ -124,8 +132,6 @@ const sideMenuBarItems:TwitterSidebarButton[] = useMemo( ()=>[
               </Link>
               </li>
               ))}
-       
-
             </ul>
             <button className="hidden sm:block bg-[#1d9bf0] text-lg font-bold px-24 py-3 rounded-full mt-4 hover:bg-sky-600">
               Post
@@ -153,13 +159,49 @@ const sideMenuBarItems:TwitterSidebarButton[] = useMemo( ()=>[
             <div className="col-span-10 sm:col-span-5 border-r-[1px] border-l-[1px] border-gray-700 h-screen  transition-all">
                 {props.children}
             </div>
+
             <div className="col-span-0 sm:col-span-3 p-4">
-            {!user &&
+            {!user ?
               (<div className="p-5 rounded-lg border-slate-600 border">
               <h1 className="font-bold text-xl mb-2">New To Twitter? </h1>
               <GoogleLogin onSuccess={handleLoginWithGoogle} />
-              </div>)
+              </div>):(
+                <div>
+                  <div className='mb-7'>
+                    <button className=' bg-white text-black hover:bg-red-600 rounded-md px-3 py-1 w-30 text-lg font-bold' onClick={handleLogout}>
+                      Logout 
+                    </button>
+                  </div>
+                <div className="p-3 rounded-lg border-slate-600 border">
+                <h1 className=" my-2 font-bold text-xl mb-5" > Who to follow</h1>
+              { user?.recommendedUsers?.map((ele:any) => (
+                <div key={ele?.id} className='flex items-center gap-3' > 
+
+                  {ele?.profileImageURL &&
+                   (<Image 
+                  src={ele?.profileImageURL} 
+                  alt='user-image' 
+                  className='rounded-full'
+                  width={60} height={60}  
+                  />
+                  )}
+                  <div>
+                  <div>
+                  {ele.firstName}
+                  {ele?.lastName}
+                  </div>
+                  <Link href={`${ele?.id}`} className='bg-white text-sm text-black rounded-sm font-semibold px-3'>
+                    View
+                  </Link>
+                  </div>
+ 
+                </div>
+               )
+               )
               }
+              </div>
+              </div>
+              )}
             </div>
         </div>
         </div>

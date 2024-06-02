@@ -97,7 +97,7 @@ export default function Home(props: HomeProps){
                     <button onClick={handleCreateTweet}
                      className="bg-[#1d9bf0] text-sm font-bold px-3 py-2 rounded-full mt-4 hover:bg-sky-600">
                     Post
-            </button>
+                </button>
                   </div>
                 </div>
                 </div>
