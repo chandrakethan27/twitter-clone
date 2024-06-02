@@ -110,7 +110,7 @@ const sideMenuBarItems:TwitterSidebarButton[] = useMemo( ()=>[
         if(verifyGoogleToken){
           window.localStorage.setItem('twitter_token', verifyGoogleToken)
         }
-        await queryClient.invalidateQueries(["current-user"])
+        await queryClient.invalidateQueries({queryKey: ["current-user"]})
     
       }, [queryClient])
     return(
